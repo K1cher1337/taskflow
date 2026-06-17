@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark" data-accent="indigo">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Персональный таск-менеджер" />
+  <meta name="theme-color" content="#0c0c0f" id="themeColor" />
+
+  <!-- PWA -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="TaskFlow" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
+
+  <title>TaskFlow</title>
+
+  <!-- Inline theme restore — runs before any paint to prevent flash -->
+  <script>
+    try {
+      const s = JSON.parse(localStorage.getItem("taskflow_settings") || "{}");
+      if (s.mode)   document.documentElement.dataset.theme  = s.mode;
+      if (s.accent) document.documentElement.dataset.accent = s.accent;
+    } catch {}
+  </script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+
+  <!-- Import map: Firebase v10 modular + SortableJS ESM -->
+  <script type="importmap">
+  {
+    "imports": {
+      "firebase/app":       "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js",
+      "sortablejs":         "https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/+esm"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <div class="app">
+    <!-- ── Topbar ──────────────────────────────────────────────── -->
+    <header class="topbar">
+      <!-- Logo -->
+      <div class="logo">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+        <span class="logo-text">TaskFlow</span>
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input id="searchInput" class="search-input" type="search"
+          placeholder="Поиск…" autocomplete="off" />
+      </div>
+
+      <!-- Right actions -->
+      <div class="topbar-right">
+        <!-- Sync dot -->
+        <div style="display:flex;align-items:center;gap:6px;margin-right:4px">
+          <span id="syncDot" class="sync-dot"></span>
+          <span id="syncText" style="font-size:11px;color:var(--text-3)">Синхр.</span>
+        </div>
+
+        <!-- Import / Export -->
+        <button class="btn-icon" id="ioBtn" title="Импорт / Экспорт">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/>
+            <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"/>
+          </svg>
+        </button>
+
+        <!-- Settings -->
+        <button class="btn-icon" id="settingsBtn" title="Настройки">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          </svg>
+        </button>
+
+        <!-- Add task -->
+        <button class="btn btn-primary" id="addTaskBtn" style="gap:6px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          <span>Задача</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Filter bar ──────────────────────────────────────────── -->
+    <div class="filter-bar" id="filterBar"></div>
+
+    <!-- ── Board ──────────────────────────────────────────────── -->
+    <main class="board" id="board"></main>
+  </div>
+
+  <!-- Offline banner -->
+  <div class="offline-banner hidden" id="offlineBanner">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="1" y1="1" x2="23" y2="23"/>
+      <path d="M16.72 11.06A10.94 10.94 0 0119 12.55M5 12.55a10.94 10.94 0 015.17-2.39M10.71 5.05A16 16 0 0122.56 9M1.42 9a15.91 15.91 0 014.7-2.88M8.53 16.11a6 6 0 016.95 0M12 20h.01"/>
+    </svg>
+    Офлайн — изменения сохраняются локально
+  </div>
+
+  <!-- Entry point -->
+  <script type="module" src="js/main.js"></script>
+
+  <!-- Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(reg => {
+          reg.addEventListener('updatefound', () => {
+            const newSW = reg.installing;
+            newSW?.addEventListener('statechange', () => {
+              if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+                // New version available
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;cursor:pointer';
+                toast.innerHTML = '🔄 Доступно обновление — нажмите для перезагрузки';
+                toast.addEventListener('click', () => { newSW.postMessage({ type: 'SKIP_WAITING' }); location.reload(); });
+                document.body.appendChild(toast);
+              }
+            });
+          });
+        });
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+/* ─── Theme: Dark (default) ──────────────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {
+  --bg:            #0c0c0f;
+  --bg-alt:        #111116;
+  --surface:       #17171d;
+  --surface-2:     #1e1e26;
+  --surface-3:     #26262f;
+  --surface-glass: rgba(23, 23, 29, 0.82);
+  --border:        rgba(255,255,255,0.07);
+  --border-bright: rgba(255,255,255,0.13);
+  --text-1:        #f0f0f5;
+  --text-2:        #9898a8;
+  --text-3:        #505060;
+  --overlay:       rgba(0,0,0,0.72);
+  --scrollbar-bg:  rgba(255,255,255,0.04);
+  --scrollbar-thumb: rgba(255,255,255,0.10);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.45);
+  --shadow-lg: 0 8px 36px rgba(0,0,0,0.55);
+  --shadow-xl: 0 16px 56px rgba(0,0,0,0.65);
+}
+
+/* ─── Theme: Light ───────────────────────────────────────────────────── */
+
+[data-theme="light"] {
+  --bg:            #f2f2f7;
+  --bg-alt:        #e8e8ef;
+  --surface:       #ffffff;
+  --surface-2:     #f5f5fa;
+  --surface-3:     #eaeaf2;
+  --surface-glass: rgba(255,255,255,0.80);
+  --border:        rgba(0,0,0,0.07);
+  --border-bright: rgba(0,0,0,0.14);
+  --text-1:        #18181f;
+  --text-2:        #60606e;
+  --text-3:        #b0b0be;
+  --overlay:       rgba(0,0,0,0.50);
+  --scrollbar-bg:  rgba(0,0,0,0.04);
+  --scrollbar-thumb: rgba(0,0,0,0.14);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 36px rgba(0,0,0,0.12);
+  --shadow-xl: 0 16px 56px rgba(0,0,0,0.14);
+}
+
+/* ─── Accent: Indigo (default) ───────────────────────────────────────── */
+
+:root,
+[data-accent="indigo"] {
+  --accent:       #6366f1;
+  --accent-hi:    #818cf8;
+  --accent-lo:    #4f46e5;
+  --accent-soft:  rgba(99, 102, 241, 0.13);
+  --accent-muted: rgba(99, 102, 241, 0.07);
+  --accent-glow:  0 0 28px rgba(99, 102, 241, 0.28);
+}
+
+/* ─── Accent: Violet ────────────────────────────────────────────────── */
+
+[data-accent="violet"] {
+  --accent:       #8b5cf6;
+  --accent-hi:    #a78bfa;
+  --accent-lo:    #7c3aed;
+  --accent-soft:  rgba(139, 92, 246, 0.13);
+  --accent-muted: rgba(139, 92, 246, 0.07);
+  --accent-glow:  0 0 28px rgba(139, 92, 246, 0.28);
+}
+
+/* ─── Accent: Emerald ───────────────────────────────────────────────── */
+
+[data-accent="emerald"] {
+  --accent:       #10b981;
+  --accent-hi:    #34d399;
+  --accent-lo:    #059669;
+  --accent-soft:  rgba(16, 185, 129, 0.13);
+  --accent-muted: rgba(16, 185, 129, 0.07);
+  --accent-glow:  0 0 28px rgba(16, 185, 129, 0.25);
+}
+
+/* ─── Accent: Rose ──────────────────────────────────────────────────── */
+
+[data-accent="rose"] {
+  --accent:       #f43f5e;
+  --accent-hi:    #fb7185;
+  --accent-lo:    #e11d48;
+  --accent-soft:  rgba(244, 63, 94, 0.13);
+  --accent-muted: rgba(244, 63, 94, 0.07);
+  --accent-glow:  0 0 28px rgba(244, 63, 94, 0.28);
+}
+
+/* ─── Accent: Amber ─────────────────────────────────────────────────── */
+
+[data-accent="amber"] {
+  --accent:       #f59e0b;
+  --accent-hi:    #fbbf24;
+  --accent-lo:    #d97706;
+  --accent-soft:  rgba(245, 158, 11, 0.13);
+  --accent-muted: rgba(245, 158, 11, 0.07);
+  --accent-glow:  0 0 28px rgba(245, 158, 11, 0.25);
+}
