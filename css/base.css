@@ -38,8 +38,8 @@ body {
 
 /* ─── Scrollbars ─────────────────────────────────────────────────────── */
 
-::-webkit-scrollbar        { width: 5px; height: 5px; }
-::-webkit-scrollbar-track  { background: var(--scrollbar-bg); border-radius: var(--r-full); }
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
 ::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: var(--r-full); }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
 
@@ -93,10 +93,10 @@ button:disabled {
   display: flex;
   align-items: center;
   gap: var(--sp-3);
-  padding: 0 var(--sp-4);
+  padding: 0 var(--sp-5);
   background: var(--surface-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   z-index: var(--z-topbar);
   position: sticky;
@@ -110,18 +110,19 @@ button:disabled {
   display: flex;
   align-items: flex-start;
   gap: var(--sp-4);
-  padding: var(--sp-4);
+  padding: var(--sp-5);
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x proximity;
+  min-height: 0;
 }
 
 /* ─── Column ─────────────────────────────────────────────────────────── */
 
 .column {
   flex-shrink: 0;
-  width: 296px;
-  max-height: 100%;
+  width: 308px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   border-radius: var(--r-xl);
@@ -129,6 +130,7 @@ button:disabled {
   border: 1px solid var(--border);
   overflow: hidden;
   scroll-snap-align: start;
+  transition: border-color var(--t-sm) var(--ease);
 }
 
 .column-head {
@@ -138,12 +140,12 @@ button:disabled {
   overflow: hidden;
 }
 
-/* Subtle column identity gradient */
+/* Column identity gradient */
 .column-head::before {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.07;
+  opacity: 0.06;
   pointer-events: none;
 }
 
@@ -159,14 +161,14 @@ button:disabled {
 }
 
 .column-icon {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1;
 }
 
 .column-name {
   font-size: var(--text-sm);
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--text-2);
   flex: 1;
@@ -188,12 +190,11 @@ button:disabled {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 var(--sp-3) var(--sp-3);
+  padding: var(--sp-1) var(--sp-3) var(--sp-3);
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
-  min-height: 48px;
-  /* Empty state min height */
+  min-height: 60px;
 }
 
 .column-body.is-empty {
@@ -206,32 +207,55 @@ button:disabled {
   padding: var(--sp-2) var(--sp-3) var(--sp-3);
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────────── */
+/* ─── Responsive: Mobile ─────────────────────────────────────────────── */
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   body { overflow: hidden; }
-
-  .board {
-    flex-direction: column;
-    align-items: stretch;
-    overflow-x: hidden;
-    overflow-y: auto;
-    height: 100%;
-    scroll-snap-type: none;
-  }
-
-  .column {
-    width: 100%;
-    flex-shrink: 0;
-    max-height: none;
-  }
-
-  .column-body {
-    max-height: 320px;
-  }
 
   .topbar {
     padding: 0 var(--sp-3);
     gap: var(--sp-2);
+    height: 52px;
+  }
+
+  /* Hide sync label text on mobile — dot is enough */
+  #syncText { display: none; }
+
+  /* Hide IO button on mobile to save space */
+  #ioBtn { display: none; }
+
+  /* Shrink search */
+  .search-wrap { max-width: 150px; }
+
+  /* Hide "Задача" text — show icon-only button */
+  #addTaskBtn span { display: none; }
+  #addTaskBtn { padding: 0; width: 34px; height: 34px; border-radius: var(--r-md); }
+
+  .board {
+    /* Horizontal swipe between columns */
+    flex-direction: row;
+    align-items: stretch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: var(--sp-3);
+    gap: var(--sp-3);
+  }
+
+  .column {
+    /* Full-width swipeable column */
+    flex-shrink: 0;
+    width: calc(100vw - 40px);
+    height: 100%;
+    max-height: 100%;
+    scroll-snap-align: center;
+  }
+
+  .column-body {
+    /* No artificial height cap — use full available space */
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
   }
 }

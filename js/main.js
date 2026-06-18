@@ -182,7 +182,7 @@ function _updateFilterBar() {
     return `<span class="filter-chip ${active ? "active" : ""}" data-tag="${tag}">${tag}</span>`;
   }).join("");
 
-  const hasFilter = filter.tags.length || filter.priority;
+  const hasFilter = filter.tags.length;
   bar.innerHTML = chips + (hasFilter
     ? `<span class="filter-clear" id="clearFilter">Сбросить</span>`
     : "");
@@ -197,7 +197,7 @@ function _updateFilterBar() {
     });
   });
   bar.querySelector("#clearFilter")?.addEventListener("click", () => {
-    store.setFilter({ tags: [], priority: null, query: "" });
+    store.setFilter({ tags: [], query: "" });
     const si = document.getElementById("searchInput");
     if (si) si.value = "";
   });

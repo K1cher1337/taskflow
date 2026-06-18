@@ -10,9 +10,8 @@ const _state = {
     accent: "indigo",
   },
   filter: {
-    query:    "",
-    tags:     [],
-    priority: null,
+    query: "",
+    tags:  [],
   },
   isOnline:   navigator.onLine,
 };

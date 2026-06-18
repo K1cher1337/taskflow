@@ -55,13 +55,11 @@ export function renderBoard() {
     let tasks = store.getColumnTasks(col.id);
 
     // Apply client-side filter
-    if (filter.query || filter.tags.length || filter.priority) {
+    if (filter.query || filter.tags.length) {
       const q  = filter.query.toLowerCase();
       const ft = filter.tags.map(t => t.toLowerCase());
-      const fp = filter.priority;
 
       tasks = tasks.filter(t => {
-        if (fp && t.priority !== fp) return false;
         if (ft.length && !ft.every(f => t.tags.map(x => x.toLowerCase()).includes(f))) return false;
         if (q) {
           const haystack = `${t.title} ${t.description} ${t.tags.join(" ")}`.toLowerCase();
@@ -131,7 +129,6 @@ function _createCard(task) {
   const el = document.createElement("div");
   el.className   = "card";
   el.dataset.id  = task.id;
-  el.dataset.p   = task.priority ?? "med";
 
   _updateCardContent(el, task);
 
@@ -141,8 +138,6 @@ function _createCard(task) {
 }
 
 function _updateCardContent(el, task) {
-  el.dataset.p = task.priority ?? "med";
-
   const tagsHtml = (task.tags ?? []).slice(0, 4).map(t =>
     `<span class="tag">${_esc(t)}</span>`
   ).join("");
@@ -152,11 +147,10 @@ function _updateCardContent(el, task) {
   el.innerHTML = `
     <div class="card-title">${_esc(task.title)}</div>
     ${task.description ? `<div class="card-desc">${_esc(task.description)}</div>` : ""}
-    <div class="card-footer">
+    ${(tagsHtml || date) ? `<div class="card-footer">
       <div class="card-tags">${tagsHtml}</div>
       <span class="card-date">${date}</span>
-      <span class="priority-dot" data-p="${task.priority ?? "med"}"></span>
-    </div>
+    </div>` : ""}
   `;
 
   // Re-attach click after innerHTML reset

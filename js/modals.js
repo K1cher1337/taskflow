@@ -48,15 +48,7 @@ export function openTaskModal(taskId = null, defaultCol = "todo") {
   const title   = task?.title       ?? "";
   const desc    = task?.description ?? "";
   const tags    = [...(task?.tags   ?? [])];
-  const prio    = task?.priority    ?? "med";
   const col     = task?.column      ?? defaultCol;
-
-  const PRIOS   = [
-    { id:"low",    label:"Низкий",   icon:"▪" },
-    { id:"med",    label:"Средний",  icon:"▪▪" },
-    { id:"high",   label:"Высокий",  icon:"▪▪▪" },
-    { id:"urgent", label:"Срочно",   icon:"🔥" },
-  ];
 
   const COLS    = [
     { id:"ideas", label:"Идеи" },
@@ -64,13 +56,6 @@ export function openTaskModal(taskId = null, defaultCol = "todo") {
     { id:"doing", label:"В процессе" },
     { id:"done",  label:"Готово" },
   ];
-
-  const priosHTML = PRIOS.map(p => `
-    <div class="priority-opt ${prio === p.id ? "active" : ""}" data-p="${p.id}">
-      <span>${p.icon}</span>
-      <span>${p.label}</span>
-    </div>
-  `).join("");
 
   const colsHTML = COLS.map(c => `
     <div class="col-opt ${col === c.id ? "active" : ""}" data-c="${c.id}">${c.label}</div>
@@ -107,10 +92,6 @@ export function openTaskModal(taskId = null, defaultCol = "todo") {
           </div>
         </div>
         <div class="field">
-          <label class="field-label">Приоритет</label>
-          <div class="priority-grid">${priosHTML}</div>
-        </div>
-        <div class="field">
           <label class="field-label">Колонка</label>
           <div class="col-grid">${colsHTML}</div>
         </div>
@@ -126,7 +107,6 @@ export function openTaskModal(taskId = null, defaultCol = "todo") {
   `);
 
   // ── Local state ──────────────────────────────────────────────────
-  let currentPrio = prio;
   let currentCol  = col;
   const currentTags = [...tags];
 
@@ -163,15 +143,6 @@ export function openTaskModal(taskId = null, defaultCol = "todo") {
     });
   });
 
-  // ── Priority select ──────────────────────────────────────────────
-  overlay.querySelectorAll(".priority-opt").forEach(opt => {
-    opt.addEventListener("click", () => {
-      overlay.querySelectorAll(".priority-opt").forEach(o => o.classList.remove("active"));
-      opt.classList.add("active");
-      currentPrio = opt.dataset.p;
-    });
-  });
-
   // ── Column select ────────────────────────────────────────────────
   overlay.querySelectorAll(".col-opt").forEach(opt => {
     opt.addEventListener("click", () => {
@@ -190,7 +161,6 @@ export function openTaskModal(taskId = null, defaultCol = "todo") {
       title:       titleVal,
       description: overlay.querySelector("#m-desc").value.trim(),
       tags:        currentTags,
-      priority:    currentPrio,
       column:      currentCol,
     };
 
