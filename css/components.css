@@ -141,8 +141,8 @@
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
-  padding: var(--sp-3);
-  cursor: pointer;
+  padding: var(--sp-3) var(--sp-3) var(--sp-3);
+  cursor: grab;
   user-select: none;
   transition: border-color var(--t-sm) var(--ease),
               box-shadow var(--t-sm) var(--ease),
@@ -151,12 +151,11 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
-  /* Entrance animation */
   animation: cardEnter var(--t-md) var(--ease-spring) both;
 }
 
 @keyframes cardEnter {
-  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  from { opacity: 0; transform: translateY(-8px) scale(0.96); }
   to   { opacity: 1; transform: none; }
 }
 
@@ -166,39 +165,18 @@
   transform: translateY(-1px);
 }
 
-/* Left priority stripe */
-.card::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 10%; bottom: 10%;
-  width: 3px;
-  border-radius: var(--r-full);
-  opacity: 0;
-  transition: opacity var(--t-sm) var(--ease);
-}
-.card:hover::before { opacity: 1; }
-.card[data-p="low"]    ::before,
-.card[data-p="low"]::before    { background: var(--p-low);    opacity: 0.6; }
-.card[data-p="med"]::before    { background: var(--p-med);    opacity: 0.6; }
-.card[data-p="high"]::before   { background: var(--p-high);   opacity: 0.8; }
-.card[data-p="urgent"]::before { background: var(--p-urgent); opacity: 1; }
-
-.card[data-p="urgent"] {
-  border-color: rgba(239,68,68,0.18);
-}
-
 .card-title {
   font-size: var(--text-sm);
   font-weight: 500;
   color: var(--text-1);
-  line-height: 1.4;
+  line-height: 1.45;
   word-break: break-word;
 }
 
 .card-desc {
   font-size: var(--text-xs);
   color: var(--text-2);
-  line-height: 1.5;
+  line-height: 1.55;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -250,33 +228,41 @@
   flex-shrink: 0;
 }
 
-.priority-dot {
-  width: 7px; height: 7px;
-  border-radius: var(--r-full);
-  flex-shrink: 0;
-}
-.priority-dot[data-p="low"]    { background: var(--p-low);    box-shadow: 0 0 5px var(--p-low); }
-.priority-dot[data-p="med"]    { background: var(--p-med);    box-shadow: 0 0 5px var(--p-med); }
-.priority-dot[data-p="high"]   { background: var(--p-high);   box-shadow: 0 0 5px var(--p-high); }
-.priority-dot[data-p="urgent"] { background: var(--p-urgent); box-shadow: 0 0 5px var(--p-urgent); animation: pulse 1.4s infinite; }
+/* ─── Drag & Drop states ─────────────────────────────────────────────── */
 
-/* Drag states */
+/* Ghost: placeholder showing where the card will land */
 .card.sortable-ghost {
-  opacity: 0.35;
-  transform: scale(0.97);
-  border-color: var(--accent);
-  background: var(--accent-muted);
+  opacity: 0;
+  background: var(--accent-muted) !important;
+  border: 1.5px dashed var(--accent) !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
+
+/* Chosen: card is selected but drag hasn't started yet */
 .card.sortable-chosen {
-  box-shadow: var(--shadow-lg), var(--accent-glow);
-  border-color: var(--accent);
-  transform: scale(1.02);
-  z-index: 10;
-}
-.card.sortable-drag {
-  box-shadow: var(--shadow-xl), var(--accent-glow);
-  transform: rotate(1.5deg) scale(1.03);
   cursor: grabbing;
+  border-color: var(--border-bright);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Drag: the floating card following the cursor */
+.card.sortable-drag {
+  opacity: 1;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.28), var(--accent-glow);
+  transform: rotate(2deg) scale(1.04);
+  cursor: grabbing;
+  border-color: var(--accent);
+  transition: none;
+  z-index: 9999;
+}
+
+/* Global dragging state */
+body.is-dragging {
+  cursor: grabbing !important;
+}
+body.is-dragging .card:not(.sortable-drag) {
+  transition: transform 220ms var(--ease), box-shadow 220ms var(--ease), border-color 220ms var(--ease);
 }
 
 /* Card delete animation */
@@ -286,7 +272,7 @@
 }
 @keyframes cardExit {
   from { opacity: 1; transform: scale(1); max-height: 200px; margin-bottom: var(--sp-2); }
-  to   { opacity: 0; transform: scale(0.9); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
+  to   { opacity: 0; transform: scale(0.92) translateY(-4px); max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; border-width: 0; }
 }
 
 /* ─── Empty column state ─────────────────────────────────────────────── */
@@ -308,8 +294,9 @@
 .column-body.drag-over {
   background: var(--accent-muted);
   border-radius: var(--r-md);
-  outline: 1.5px dashed var(--accent);
-  outline-offset: -3px;
+  outline: 2px dashed var(--accent);
+  outline-offset: -4px;
+  transition: background 120ms var(--ease), outline-color 120ms var(--ease);
 }
 
 /* ─── Inputs & Textarea ──────────────────────────────────────────────── */
@@ -382,40 +369,6 @@
   padding: 2px 0;
 }
 .tags-field input::placeholder { color: var(--text-3); font-size: var(--text-xs); }
-
-/* Priority selector */
-.priority-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--sp-2);
-}
-.priority-opt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  padding: var(--sp-2) var(--sp-2);
-  border-radius: var(--r-md);
-  border: 1.5px solid var(--border);
-  cursor: pointer;
-  transition: all var(--t-sm) var(--ease);
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--text-2);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.priority-opt:hover { border-color: var(--border-bright); }
-.priority-opt.active {
-  border-color: currentColor;
-  background: rgba(255,255,255,0.04);
-}
-.priority-opt[data-p="low"]    { --c: var(--p-low); }
-.priority-opt[data-p="med"]    { --c: var(--p-med); }
-.priority-opt[data-p="high"]   { --c: var(--p-high); }
-.priority-opt[data-p="urgent"] { --c: var(--p-urgent); }
-.priority-opt.active { color: var(--c); border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent); }
 
 /* Column picker */
 .col-grid {
